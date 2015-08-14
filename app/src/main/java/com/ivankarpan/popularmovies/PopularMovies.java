@@ -1,10 +1,13 @@
 package com.ivankarpan.popularmovies;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.omertron.themoviedbapi.MovieDbException;
@@ -43,8 +46,19 @@ public class PopularMovies extends AppCompatActivity {
 
         mPopularMoviesAdapter = new PopularMoviesAdapter(this);
 
-        GridView gridview = (GridView) findViewById(R.id.gridView);
+        final GridView gridview = (GridView) findViewById(R.id.gridView);
         gridview.setAdapter(mPopularMoviesAdapter);
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                MovieInfo movie = (MovieInfo) mPopularMoviesAdapter.getItem(position);
+
+                Intent intent = new Intent(PopularMovies.this, MovieDetails.class);
+                intent.putExtra(MovieDetails.MOVIE_ID, movie.getId());
+                startActivity(intent);
+            }
+        });
 
         new InitializeConfiguration().execute();
     }
